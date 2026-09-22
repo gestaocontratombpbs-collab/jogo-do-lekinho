@@ -1,0 +1,1305 @@
+<title>Cassino do Lekinho — Brincadeira Interna</title>
+<style>
+  :root{
+    --bg:#0e0f14;
+    --bg-alt:#161822;
+    --card:#1b1e2b;
+    --card-2:#22263a;
+    --border:#2c3145;
+    --text:#eef0fa;
+    --muted:#9aa0b4;
+    --accent:#ffd447;
+    --accent-2:#7c5cff;
+    --green:#3ddc84;
+    --red:#ff5470;
+    --warn-bg:#3a1f00;
+    --warn-border:#ff9d2e;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 20% -10%, #241b3d 0%, var(--bg) 45%) fixed;
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;
+    min-height:100vh;
+    padding-bottom:60px;
+  }
+  a{color:var(--accent);}
+
+  /* ---------- Tarjas piscantes ---------- */
+  @keyframes piscar{
+    0%,100%{opacity:1;}
+    50%{opacity:.55;}
+  }
+  .tarja-alerta{
+    background:#7a0012;
+    border-top:3px solid #ff2b4d;
+    border-bottom:3px solid #ff2b4d;
+    color:#ffe1e6;
+    text-align:center;
+    font-weight:900;
+    font-size:13px;
+    padding:10px 14px;
+    letter-spacing:.4px;
+    animation:piscar 1.3s ease-in-out infinite;
+  }
+  .disclaimer-inline{
+    background:var(--warn-bg);
+    border:1px dashed var(--warn-border);
+    color:#ffd9a0;
+    border-radius:10px;
+    padding:10px 14px;
+    font-size:12.5px;
+    margin:14px 0;
+    display:flex;
+    gap:8px;
+    align-items:flex-start;
+  }
+  .disclaimer-inline .ico{flex-shrink:0;font-size:16px;}
+  footer.disclaimer-bottom{
+    max-width:900px;
+    margin:50px auto 0;
+    text-align:center;
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    max-width:1000px;
+    margin:0 auto;
+    padding:28px 20px 10px;
+    text-align:center;
+  }
+  header h1{
+    font-size:clamp(28px,5vw,44px);
+    margin:0;
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    font-weight:900;
+    letter-spacing:1px;
+  }
+  header p.subtitle{color:var(--muted);margin:6px 0 0;font-size:14px;}
+
+  .wallet{
+    max-width:1000px;
+    margin:20px auto;
+    padding:0 20px;
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    align-items:stretch;
+    justify-content:center;
+  }
+  .balance-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:16px 22px;
+    min-width:190px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .balance-card .emoji{font-size:30px;}
+  .balance-card .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+  .balance-card .amount{font-size:22px;font-weight:800;}
+  .balance-card.pesos .amount{color:var(--accent);}
+  .balance-card.dolarlex .amount{color:var(--green);}
+
+  .bonus-box, .agiota-box{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:16px 22px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    min-width:230px;
+  }
+  .agiota-box{border-color:#5a2a2a;}
+  .agiota-box .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+  .agiota-box .desc{font-size:12.5px;color:var(--muted);margin-top:2px;}
+  .agiota-box .divida{font-size:11.5px;color:#ffb0b0;margin-top:4px;font-weight:700;}
+
+  button{
+    font-family:inherit;
+    cursor:pointer;
+    border:none;
+    border-radius:10px;
+    font-weight:700;
+    transition:transform .08s ease, opacity .15s ease, filter .15s ease;
+  }
+  button:active:not(:disabled){transform:scale(.97);}
+  button:disabled{opacity:.4;cursor:not-allowed;filter:grayscale(.4);}
+  .btn-primary{
+    background:linear-gradient(90deg,var(--accent),#ffb347);
+    color:#26190a;
+    padding:12px 18px;
+    font-size:14px;
+  }
+  .btn-primary:hover:not(:disabled){filter:brightness(1.08);}
+  .btn-secondary{
+    background:var(--card-2);
+    color:var(--text);
+    border:1px solid var(--border);
+    padding:10px 16px;
+    font-size:13px;
+  }
+  .btn-secondary:hover:not(:disabled){background:#2a2f45;}
+  .btn-danger{
+    background:linear-gradient(90deg,#ff5470,#ff8360);
+    color:#2a0510;
+    padding:10px 16px;
+    font-size:13px;
+  }
+  .btn-agiota{
+    background:linear-gradient(90deg,#8a1f3a,#c93b5a);
+    color:#fff0f2;
+    padding:10px 16px;
+    font-size:13px;
+  }
+
+  /* ---------- Tabs ---------- */
+  nav.tabs{
+    max-width:1000px;
+    margin:30px auto 0;
+    padding:0 20px;
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  nav.tabs button{
+    background:var(--card);
+    color:var(--muted);
+    border:1px solid var(--border);
+    padding:12px 20px;
+    font-size:14px;
+  }
+  nav.tabs button.active{
+    background:linear-gradient(90deg,var(--accent-2),#a084ff);
+    color:#fff;
+    border-color:transparent;
+  }
+
+  main{
+    max-width:1000px;
+    margin:0 auto;
+    padding:20px;
+  }
+  section.game{
+    display:none;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:28px;
+    margin-top:10px;
+  }
+  section.game.active{display:block;animation:fadein .25s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  section.game h2{margin-top:0;font-size:22px;}
+  section.game .game-desc{color:var(--muted);font-size:13.5px;margin-bottom:6px;}
+
+  /* ---------- Roleta ---------- */
+  .roleta-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:20px;
+    padding-top:10px;
+  }
+  .wheel-holder{position:relative;width:260px;height:260px;}
+  .pointer{
+    position:absolute;
+    top:-6px;left:50%;
+    transform:translateX(-50%);
+    width:0;height:0;
+    border-left:14px solid transparent;
+    border-right:14px solid transparent;
+    border-top:22px solid var(--accent);
+    z-index:5;
+    filter:drop-shadow(0 2px 3px rgba(0,0,0,.5));
+  }
+  .wheel{
+    width:260px;height:260px;
+    border-radius:50%;
+    border:6px solid var(--card-2);
+    position:relative;
+    transition:transform 3.2s cubic-bezier(.15,.85,.25,1);
+    box-shadow:0 0 0 4px #0006 inset, 0 10px 30px #0008;
+  }
+  .wheel .seg-label{
+    position:absolute;
+    top:50%;left:50%;
+    width:110px;
+    text-align:center;
+    font-size:11px;
+    font-weight:800;
+    transform-origin:0 0;
+  }
+  .roleta-result{
+    min-height:26px;
+    font-weight:800;
+    font-size:16px;
+  }
+  .roleta-result.win{color:var(--green);}
+  .roleta-result.lose{color:var(--red);}
+
+  /* ---------- Foguetes ---------- */
+  .foguetes-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;}
+  .sky{
+    width:100%;
+    max-width:520px;
+    height:220px;
+    border-radius:16px;
+    background:linear-gradient(180deg,#0c1024,#1a1330 60%,#241a1a);
+    position:relative;
+    overflow:hidden;
+    border:1px solid var(--border);
+  }
+  .sky .mult{
+    position:absolute;top:14px;left:50%;transform:translateX(-50%);
+    font-size:38px;font-weight:900;color:var(--accent);
+    text-shadow:0 0 14px rgba(255,212,71,.5);
+  }
+  .sky .foguete{
+    position:absolute;
+    left:50%;
+    bottom:10px;
+    font-size:34px;
+    transform:translate(-50%,0) rotate(-45deg);
+    transition:bottom .12s linear, transform .12s linear;
+  }
+  .sky .foguete.crashed{filter:grayscale(1) brightness(.5);}
+  .sky .trail{
+    position:absolute;
+    left:50%;bottom:10px;
+    width:3px;
+    background:linear-gradient(180deg,transparent,rgba(255,180,80,.6));
+    transform:translateX(-50%);
+  }
+  .sky .crash-flash{
+    position:absolute;inset:0;
+    background:rgba(255,84,112,.25);
+    display:none;
+    align-items:center;justify-content:center;
+    font-weight:900;font-size:26px;color:#ff8ba0;
+  }
+  .sky .crash-flash.show{display:flex;}
+  .foguete-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;}
+  input[type=number], select{
+    background:var(--card-2);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:10px 12px;
+    border-radius:10px;
+    font-size:14px;
+    width:130px;
+  }
+  .foguetes-info{font-size:12.5px;color:var(--muted);text-align:center;max-width:420px;}
+
+  /* ---------- Futebol ---------- */
+  .futebol-wrap{display:flex;flex-direction:column;gap:18px;}
+  .matchup{
+    display:flex;align-items:center;justify-content:center;gap:18px;
+    background:var(--card-2);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:20px;
+    flex-wrap:wrap;
+  }
+  .team{text-align:center;min-width:130px;}
+  .team .flag{font-size:34px;}
+  .team .name{font-weight:800;font-size:14px;margin-top:4px;}
+  .team .tag{
+    display:inline-block;
+    margin-top:4px;
+    font-size:10.5px;
+    background:#2a2f45;
+    color:var(--accent);
+    border-radius:8px;
+    padding:2px 8px;
+    font-weight:700;
+  }
+  .vs{font-weight:900;color:var(--muted);font-size:18px;}
+  .scoreboard{
+    text-align:center;
+    font-size:40px;
+    font-weight:900;
+    letter-spacing:2px;
+  }
+  .clock{text-align:center;color:var(--muted);font-size:13px;font-weight:700;}
+
+  .alerta-jogo{
+    max-width:640px;
+    margin:0 auto;
+    text-align:center;
+    font-weight:900;
+    font-size:14.5px;
+    color:#ffdca8;
+    background:#3a1f00;
+    border:2px solid var(--warn-border);
+    border-radius:12px;
+    padding:10px 14px;
+    min-height:20px;
+    opacity:0;
+    transform:scale(.96);
+    transition:opacity .2s ease, transform .2s ease;
+  }
+  .alerta-jogo.show{opacity:1;transform:scale(1);animation:piscar .7s ease-in-out 2;}
+
+  .match-log{
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:10px 14px;
+    max-height:130px;
+    overflow-y:auto;
+    font-size:12.5px;
+    color:var(--muted);
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+  }
+  .bet-form{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:center;
+  }
+  .bet-options{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+  .bet-options label{
+    background:var(--card-2);
+    border:1px solid var(--border);
+    padding:10px 14px;
+    border-radius:10px;
+    font-size:13px;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+  }
+  .bet-options label .odd-tag{font-size:11px;color:var(--accent);font-weight:800;}
+  .bet-options label.picked{border-color:var(--accent-2);background:#2a2450;}
+  .bet-options label.bloqueado{opacity:.45;cursor:not-allowed;}
+  .bet-options input{accent-color:var(--accent-2);}
+  .futebol-result{text-align:center;font-weight:800;font-size:16px;min-height:24px;}
+  .futebol-result.win{color:var(--green);}
+  .futebol-result.lose{color:var(--red);}
+
+  .ranking-box{
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:12px 16px;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .ranking-box summary{cursor:pointer;font-weight:700;color:var(--text);}
+  .ranking-box ol{margin:10px 0 0;padding-left:20px;}
+  .ranking-box li{margin-bottom:3px;}
+
+  .toast{
+    position:fixed;
+    bottom:20px;left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--card-2);
+    border:1px solid var(--border);
+    padding:12px 20px;
+    border-radius:12px;
+    font-size:13.5px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease;
+    z-index:50;
+    max-width:90vw;
+    text-align:center;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media(max-width:480px){
+    .wallet{flex-direction:column;align-items:stretch;}
+    .balance-card,.bonus-box,.agiota-box{min-width:0;}
+  }
+</style>
+
+<div class="tarja-alerta">
+  🚫 NÃO UTILIZA DINHEIRO REAL. IMPOSSÍVEL DEPOSITAR OU SACAR. APENAS BRINCADEIRA INTERNA DA SALA. 🚫
+</div>
+
+<header>
+  <h1>🎰 CASSINO DO LEKINHO</h1>
+  <p class="subtitle">Brincadeira 100% fictícia da sala • Moedas: Pesos Lekinhos ($LK) 🪙 e DolarAlex ($DX) 💵</p>
+</header>
+
+<div class="wallet">
+  <div class="balance-card pesos">
+    <div class="emoji">🪙</div>
+    <div>
+      <div class="label">Pesos Lekinhos ($LK)</div>
+      <div class="amount" id="saldoPesos">0</div>
+    </div>
+  </div>
+  <div class="balance-card dolarlex">
+    <div class="emoji">💵</div>
+    <div>
+      <div class="label">DolarAlex ($DX)</div>
+      <div class="amount" id="saldoDolar">0</div>
+    </div>
+  </div>
+  <div class="bonus-box">
+    <div style="flex:1">
+      <div class="label" style="font-size:11px;color:var(--muted);text-transform:uppercase;">Bônus único</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:2px;">1.000 $LK de boas-vindas</div>
+    </div>
+    <button class="btn-primary" id="btnBonus" onclick="resgatarBonus()">Resgatar 1k</button>
+  </div>
+  <div class="agiota-box">
+    <div style="flex:1">
+      <div class="label">O Agiota</div>
+      <div class="desc">Só quando seu $LK zerar: empresta 300 $LK, mas leva 30% das próximas 3 vitórias.</div>
+      <div class="divida" id="divInfo" style="display:none;"></div>
+    </div>
+    <button class="btn-agiota" id="btnAgiota" onclick="chamarAgiota()">Chamar Agiota</button>
+  </div>
+</div>
+
+<div style="max-width:1000px;margin:0 auto;padding:0 20px;">
+  <div class="disclaimer-inline">
+    <span class="ico">⚠️</span>
+    <span>Não existe recarga, depósito, saque ou compra de créditos de verdade. O único jeito de conseguir $LK ou $DX é o bônus inicial (uma vez só), o empréstimo do Agiota (também fictício) e o que você ganhar jogando.</span>
+  </div>
+</div>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="roleta" onclick="trocarAba('roleta')">🎡 Roleta Alex</button>
+  <button class="tab-btn" data-tab="foguetes" onclick="trocarAba('foguetes')">🚀 Lekinho Foguetes</button>
+  <button class="tab-btn" data-tab="futebol" onclick="trocarAba('futebol')">⚽ Futebol do Alex</button>
+</nav>
+
+<main>
+
+  <!-- ============ ROLETA ALEX ============ -->
+  <section class="game active" id="tab-roleta">
+    <h2>🎡 Roleta Alex</h2>
+    <p class="game-desc">Cada giro custa <strong>50 $LK</strong>. 50% de chance de ganhar algo, 50% de chance de não ganhar nada. Prêmios: 5, 20, 100 $LK ou 1 $DX (mesma chance entre eles).</p>
+    <div class="disclaimer-inline">
+      <span class="ico">🚫</span>
+      <span>Jogo de mentirinha — os prêmios são só $LK / $DX fictícios, sem nenhum valor real. Sofre a taxa do Agiota se houver dívida ativa.</span>
+    </div>
+    <div class="roleta-wrap">
+      <div class="wheel-holder">
+        <div class="pointer"></div>
+        <div class="wheel" id="wheel"></div>
+      </div>
+      <button class="btn-primary" id="btnGirar" onclick="girarRoleta()">Girar (50 🪙)</button>
+      <div class="roleta-result" id="roletaResult"></div>
+    </div>
+  </section>
+
+  <!-- ============ LEKINHO FOGUETES ============ -->
+  <section class="game" id="tab-foguetes">
+    <h2>🚀 Lekinho Foguetes</h2>
+    <p class="game-desc">Aposte $LK, acompanhe o multiplicador subir e clique em <strong>Cash Out</strong> antes do foguete crashar. Metade das rodadas crasha cedo, metade dá tempo de sobra.</p>
+    <div class="disclaimer-inline">
+      <span class="ico">🚫</span>
+      <span>Multiplicador fictício, sem nenhuma ligação com apostas ou dinheiro real. Sofre a taxa do Agiota se houver dívida ativa.</span>
+    </div>
+    <div class="foguetes-wrap">
+      <div class="sky" id="sky">
+        <div class="mult" id="multDisplay">1.00x</div>
+        <div class="trail" id="trail" style="height:0px;"></div>
+        <div class="foguete" id="foguete">🚀</div>
+        <div class="crash-flash" id="crashFlash">💥 CRASHOU!</div>
+      </div>
+      <div class="foguete-controls">
+        <input type="number" id="apostaFoguete" min="10" step="10" value="50" />
+        <button class="btn-primary" id="btnIniciarFoguete" onclick="iniciarFoguete()">Apostar & Decolar</button>
+        <button class="btn-danger" id="btnCashout" onclick="cashOut()" disabled>Cash Out</button>
+      </div>
+      <div class="foguetes-info" id="foguetesInfo">Defina o valor da aposta em $LK e clique em "Apostar & Decolar".</div>
+    </div>
+  </section>
+
+  <!-- ============ FUTEBOL DO ALEX ============ -->
+  <section class="game" id="tab-futebol">
+    <h2>⚽ Futebol do Alex</h2>
+    <p class="game-desc">Sistema de <strong>Força Oculta</strong>: cada time tem um ranking secreto que define as Odds automáticas. Acertar multiplica sua aposta pela Odd — e vale a pena ficar de olho nos <strong>Malefícios</strong> que podem mudar tudo no meio do jogo.</p>
+    <div class="disclaimer-inline">
+      <span class="ico">🚫</span>
+      <span>Times, placares, lesões, expulsões e "apagões" são 100% simulados por script — não existe transmissão real. Sofre a taxa do Agiota se houver dívida ativa.</span>
+    </div>
+
+    <details class="ranking-box">
+      <summary>📜 Ranking de Força Oculta (clique para ver)</summary>
+      <ol id="rankingLista"></ol>
+    </details>
+
+    <div class="futebol-wrap">
+      <div class="matchup" id="matchup"></div>
+      <div class="scoreboard" id="scoreboard">0 x 0</div>
+      <div class="clock" id="clock">Aguardando início da partida...</div>
+      <div class="alerta-jogo" id="alertaJogo"></div>
+      <div class="match-log" id="matchLog"></div>
+
+      <div class="bet-form" id="betForm">
+        <select id="moedaAposta">
+          <option value="pesos">🪙 Pesos Lekinhos ($LK)</option>
+          <option value="dolar">💵 DolarAlex ($DX)</option>
+        </select>
+        <input type="number" id="valorAposta" min="1" step="1" value="10" />
+        <div class="bet-options" id="betOptions"></div>
+        <button class="btn-primary" id="btnApostarFutebol" onclick="iniciarPartida()">Apostar & Começar Jogo</button>
+      </div>
+      <div class="futebol-result" id="futebolResult"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="disclaimer-bottom">
+  <div class="tarja-alerta" style="border-radius:14px;">
+    🚫 NÃO UTILIZA DINHEIRO REAL. IMPOSSÍVEL DEPOSITAR OU SACAR. APENAS BRINCADEIRA INTERNA DA SALA. 🚫
+  </div>
+  <p style="color:var(--muted);font-size:12px;margin-top:14px;">
+    Os saldos ficam salvos apenas neste navegador (localStorage), não em nenhum servidor. Jogue com moderação — mesmo sendo de brincadeira. 🎉
+  </p>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ==================================================
+     ESTADO / PERSISTÊNCIA
+  ================================================== */
+  const STORAGE_KEY = 'cassinoLekinhoState';
+
+  function estadoPadrao(){
+    return { pesos: 0, dolar: 0, bonusResgatado: false, agiotaCobrancasRestantes: 0 };
+  }
+
+  function carregarEstado(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return estadoPadrao();
+      const parsed = JSON.parse(raw);
+      return {
+        pesos: Number.isFinite(parsed.pesos) ? parsed.pesos : 0,
+        dolar: Number.isFinite(parsed.dolar) ? parsed.dolar : 0,
+        bonusResgatado: !!parsed.bonusResgatado,
+        agiotaCobrancasRestantes: Number.isFinite(parsed.agiotaCobrancasRestantes) ? parsed.agiotaCobrancasRestantes : 0
+      };
+    }catch(e){
+      return estadoPadrao();
+    }
+  }
+
+  function salvarEstado(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
+  }
+
+  let estado = carregarEstado();
+
+  function atualizarSaldoUI(){
+    document.getElementById('saldoPesos').textContent = estado.pesos.toLocaleString('pt-BR');
+    document.getElementById('saldoDolar').textContent = estado.dolar.toLocaleString('pt-BR');
+
+    const btnBonus = document.getElementById('btnBonus');
+    btnBonus.disabled = estado.bonusResgatado;
+    btnBonus.textContent = estado.bonusResgatado ? 'Bônus já resgatado' : 'Resgatar 1k';
+
+    const btnAgiota = document.getElementById('btnAgiota');
+    btnAgiota.disabled = estado.pesos > 0;
+    const divInfo = document.getElementById('divInfo');
+    if(estado.agiotaCobrancasRestantes > 0){
+      divInfo.style.display = 'block';
+      divInfo.textContent = `Dívida ativa: ${estado.agiotaCobrancasRestantes} cobrança(s) restante(s) (30% das próximas vitórias).`;
+    }else{
+      divInfo.style.display = 'none';
+    }
+
+    atualizarDisponibilidadeBotoes();
+  }
+
+  function atualizarDisponibilidadeBotoes(){
+    document.getElementById('btnGirar').disabled = estado.pesos < 50 || girando;
+    document.getElementById('btnIniciarFoguete').disabled = estado.pesos <= 0 || foguetesRodando;
+  }
+
+  function mostrarToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(mostrarToast._timer);
+    mostrarToast._timer = setTimeout(()=>t.classList.remove('show'), 3200);
+  }
+
+  function resgatarBonus(){
+    if(estado.bonusResgatado) return;
+    estado.pesos += 1000;
+    estado.bonusResgatado = true;
+    salvarEstado();
+    atualizarSaldoUI();
+    mostrarToast('🎁 Bônus resgatado: +1.000 Pesos Lekinhos!');
+  }
+
+  function chamarAgiota(){
+    if(estado.pesos > 0){
+      mostrarToast('O Agiota só aparece quando seu saldo de $LK zerar completamente.');
+      return;
+    }
+    estado.pesos += 300;
+    estado.agiotaCobrancasRestantes = 3;
+    salvarEstado();
+    atualizarSaldoUI();
+    mostrarToast('💰 O Agiota te emprestou 300 $LK! Ele vai levar 30% das suas próximas 3 vitórias, em qualquer jogo.');
+  }
+
+  // Aplica o confisco de 30% se houver dívida ativa com o Agiota. Retorna o valor líquido a creditar.
+  function aplicarConfiscoAgiota(premioBruto){
+    if(estado.agiotaCobrancasRestantes > 0 && premioBruto > 0){
+      const taxa = Math.floor(premioBruto * 0.3);
+      const liquido = premioBruto - taxa;
+      estado.agiotaCobrancasRestantes--;
+      mostrarToast(`💸 O Agiota confiscou ${taxa} do seu prêmio! Restam ${estado.agiotaCobrancasRestantes} cobrança(s) da dívida.`);
+      return liquido;
+    }
+    return premioBruto;
+  }
+
+  /* ==================================================
+     NAVEGAÇÃO POR ABAS
+  ================================================== */
+  function trocarAba(nome){
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===nome));
+    document.querySelectorAll('section.game').forEach(s=>s.classList.toggle('active', s.id==='tab-'+nome));
+  }
+
+  /* ==================================================
+     ROLETA ALEX
+     8 fatias: 4 "perdeu" (50%) + 4 prêmios (12,5% cada, mesma chance entre eles)
+  ================================================== */
+  const CUSTO_GIRO = 50;
+  const segmentosRoleta = [
+    { tipo:'lose', label:'PERDEU' },
+    { tipo:'win', valor:5, moeda:'pesos', label:'5 🪙' },
+    { tipo:'lose', label:'PERDEU' },
+    { tipo:'win', valor:20, moeda:'pesos', label:'20 🪙' },
+    { tipo:'lose', label:'PERDEU' },
+    { tipo:'win', valor:100, moeda:'pesos', label:'100 🪙' },
+    { tipo:'lose', label:'PERDEU' },
+    { tipo:'win', valor:1, moeda:'dolar', label:'1 💵' },
+  ];
+  let girando = false;
+  let rotacaoAtual = 0;
+
+  function montarRoda(){
+    const wheel = document.getElementById('wheel');
+    const n = segmentosRoleta.length;
+    const fatia = 360/n;
+    let gradiente = 'conic-gradient(';
+    segmentosRoleta.forEach((seg,i)=>{
+      const cor = i%2===0 ? '#232842' : '#ffd447';
+      gradiente += `${cor} ${i*fatia}deg ${(i+1)*fatia}deg${i<n-1?', ':''}`;
+    });
+    gradiente += ')';
+    wheel.style.background = gradiente;
+
+    segmentosRoleta.forEach((seg,i)=>{
+      const centro = i*fatia + fatia/2;
+      const label = document.createElement('div');
+      label.className = 'seg-label';
+      label.textContent = seg.label;
+      label.style.transform = `rotate(${centro}deg) translate(40px,-6px)`;
+      label.style.color = i%2===0 ? '#eef0fa' : '#26190a';
+      wheel.appendChild(label);
+    });
+  }
+  montarRoda();
+
+  function girarRoleta(){
+    if(girando) return;
+    if(estado.pesos < CUSTO_GIRO){
+      mostrarToast('Saldo insuficiente de Pesos Lekinhos para girar.');
+      return;
+    }
+    girando = true;
+    estado.pesos -= CUSTO_GIRO;
+    salvarEstado();
+    atualizarSaldoUI();
+    document.getElementById('roletaResult').textContent = '';
+    document.getElementById('roletaResult').className = 'roleta-result';
+
+    // 50% ganha algo (dividido igualmente entre os 4 prêmios) / 50% perde
+    const ganhou = Math.random() < 0.5;
+    const indicesCandidatos = segmentosRoleta
+      .map((s,i)=>i)
+      .filter(i=> ganhou ? segmentosRoleta[i].tipo==='win' : segmentosRoleta[i].tipo==='lose');
+    const idxEscolhido = indicesCandidatos[Math.floor(Math.random()*indicesCandidatos.length)];
+
+    const fatia = 360/segmentosRoleta.length;
+    const centroAlvo = idxEscolhido*fatia + fatia/2;
+    const voltasExtras = 5;
+    const alvoAbs = Math.ceil((rotacaoAtual+1)/360)*360 + voltasExtras*360 + (360 - centroAlvo);
+    rotacaoAtual = alvoAbs;
+    document.getElementById('wheel').style.transform = `rotate(${rotacaoAtual}deg)`;
+
+    setTimeout(()=>{
+      const seg = segmentosRoleta[idxEscolhido];
+      const resultEl = document.getElementById('roletaResult');
+      if(seg.tipo==='win'){
+        const liquido = aplicarConfiscoAgiota(seg.valor);
+        if(seg.moeda==='pesos'){ estado.pesos += liquido; }
+        else{ estado.dolar += liquido; }
+        salvarEstado();
+        const nomeMoeda = seg.moeda==='pesos' ? 'Pesos Lekinhos' : 'DolarAlex';
+        resultEl.textContent = liquido===seg.valor
+          ? `🎉 Você ganhou ${seg.valor} ${nomeMoeda}!`
+          : `🎉 Prêmio de ${seg.valor} ${nomeMoeda}, mas ${liquido} líquido após o Agiota.`;
+        resultEl.classList.add('win');
+      }else{
+        resultEl.textContent = '😢 Não foi dessa vez. Perdeu a aposta.';
+        resultEl.classList.add('lose');
+      }
+      atualizarSaldoUI();
+      girando = false;
+      atualizarDisponibilidadeBotoes();
+    }, 3300);
+  }
+
+  /* ==================================================
+     LEKINHO FOGUETES (CRASH GAME)
+  ================================================== */
+  let foguetesRodando = false;
+  let foguetesInterval = null;
+  let multiplicadorAtual = 1.0;
+  let crashPoint = 1.0;
+  let apostaAtualFoguete = 0;
+  let cashoutFeito = false;
+
+  function gerarCrashPoint(){
+    if(Math.random() < 0.5){
+      return 1.01 + Math.random()*(1.30-1.01);
+    }else{
+      return 1.30 + Math.random()*(10.0-1.30);
+    }
+  }
+
+  function iniciarFoguete(){
+    if(foguetesRodando) return;
+    const input = document.getElementById('apostaFoguete');
+    const valor = Math.floor(Number(input.value));
+    if(!Number.isFinite(valor) || valor <= 0){
+      mostrarToast('Digite um valor de aposta válido.');
+      return;
+    }
+    if(valor > estado.pesos){
+      mostrarToast('Saldo insuficiente de Pesos Lekinhos.');
+      return;
+    }
+
+    apostaAtualFoguete = valor;
+    estado.pesos -= valor;
+    salvarEstado();
+    atualizarSaldoUI();
+
+    foguetesRodando = true;
+    cashoutFeito = false;
+    multiplicadorAtual = 1.0;
+    crashPoint = gerarCrashPoint();
+
+    document.getElementById('btnIniciarFoguete').disabled = true;
+    document.getElementById('btnCashout').disabled = false;
+    document.getElementById('crashFlash').classList.remove('show');
+    document.getElementById('foguete').classList.remove('crashed');
+    document.getElementById('foguete').style.bottom = '10px';
+    document.getElementById('trail').style.height = '0px';
+    document.getElementById('multDisplay').textContent = '1.00x';
+    document.getElementById('multDisplay').style.color = 'var(--accent)';
+    document.getElementById('foguetesInfo').textContent = `Aposta: ${valor} 🪙 — decolando...`;
+
+    foguetesInterval = setInterval(()=>{
+      multiplicadorAtual += (0.015 + multiplicadorAtual*0.012);
+      document.getElementById('multDisplay').textContent = multiplicadorAtual.toFixed(2)+'x';
+
+      const alturaMax = 170;
+      const progresso = Math.min(1, Math.log(multiplicadorAtual+0.001)/Math.log(10));
+      const bottom = 10 + progresso*alturaMax;
+      document.getElementById('foguete').style.bottom = bottom+'px';
+      document.getElementById('trail').style.height = Math.max(0,bottom-10)+'px';
+
+      if(multiplicadorAtual >= crashPoint){
+        crasharFoguete();
+      }
+    }, 90);
+  }
+
+  function crasharFoguete(){
+    clearInterval(foguetesInterval);
+    foguetesRodando = false;
+    document.getElementById('foguete').classList.add('crashed');
+    document.getElementById('crashFlash').classList.add('show');
+    document.getElementById('btnCashout').disabled = true;
+    document.getElementById('multDisplay').style.color = 'var(--red)';
+
+    if(!cashoutFeito){
+      document.getElementById('foguetesInfo').textContent = `💥 Crashou em ${multiplicadorAtual.toFixed(2)}x. Você perdeu ${apostaAtualFoguete} 🪙.`;
+    }
+    setTimeout(()=>{
+      document.getElementById('btnIniciarFoguete').disabled = estado.pesos<=0;
+      atualizarDisponibilidadeBotoes();
+    }, 900);
+  }
+
+  function cashOut(){
+    if(!foguetesRodando || cashoutFeito) return;
+    cashoutFeito = true;
+    foguetesRodando = false;
+    clearInterval(foguetesInterval);
+
+    const premioBruto = Math.floor(apostaAtualFoguete * multiplicadorAtual);
+    const premioLiquido = aplicarConfiscoAgiota(premioBruto);
+    estado.pesos += premioLiquido;
+    salvarEstado();
+    atualizarSaldoUI();
+
+    document.getElementById('btnCashout').disabled = true;
+    document.getElementById('multDisplay').style.color = 'var(--green)';
+    document.getElementById('foguetesInfo').textContent = `✅ Retirou em ${multiplicadorAtual.toFixed(2)}x: ${premioLiquido} 🪙 (aposta de ${apostaAtualFoguete} 🪙, já incluindo o valor de volta + o lucro).`;
+    mostrarToast(`✅ Cash out em ${multiplicadorAtual.toFixed(2)}x: +${premioLiquido} Pesos Lekinhos`);
+
+    document.getElementById('btnIniciarFoguete').disabled = false;
+    atualizarDisponibilidadeBotoes();
+  }
+
+  /* ==================================================
+     FUTEBOL DO ALEX — FORÇA OCULTA, ODDS E MALEFÍCIOS
+  ================================================== */
+  const TIMES = [
+    { id:'neymar',       nome:'Amigos do Neymar',  bandeira:'⭐', forca:8 },
+    { id:'alex',         nome:'Amigos do Alex',    bandeira:'🕶️', forca:7 },
+    { id:'brasil',       nome:'Brasil',            bandeira:'🇧🇷', forca:6 },
+    { id:'arsenal',      nome:'Arsenal',           bandeira:'🔴', forca:5 },
+    { id:'tottenham',    nome:'Tottenham',         bandeira:'⚪', forca:4 },
+    { id:'corinthians',  nome:'Corinthians',       bandeira:'⚫', forca:3 },
+    { id:'angola',       nome:'Angola',            bandeira:'🇦🇴', forca:2 },
+    { id:'parauapebas',  nome:'Parauapebas FC',    bandeira:'🏗️', forca:1 },
+  ];
+  const TIMES_FRACOS = ['corinthians','angola','parauapebas'];
+  const TIMES_TOPO = ['neymar','alex','brasil'];
+  const TIMES_CASA_BONUS = ['angola','parauapebas'];
+
+  document.getElementById('rankingLista').innerHTML = TIMES.map(t=>`<li>${t.bandeira} ${t.nome}</li>`).join('');
+
+  let partida = null;
+
+  function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+
+  function probParaOdd(p){
+    if(p <= 0.0001) return null; // impossível
+    const odd = Math.max(1.05, (1/p) * 0.90);
+    return Math.round(odd*100)/100;
+  }
+
+  function novoConfronto(){
+    const indices = [0,1,2,3,4,5,6,7];
+    for(let i=indices.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [indices[i],indices[j]] = [indices[j],indices[i]];
+    }
+    const baseA = TIMES[indices[0]];
+    const baseB = TIMES[indices[1]];
+
+    const times = {
+      A: { ...baseA, forcaAj: baseA.forca, casa:false, pipoca:false, bonusTopo:false },
+      B: { ...baseB, forcaAj: baseB.forca, casa:false, pipoca:false, bonusTopo:false },
+    };
+
+    // Fator casa: Angola / Parauapebas FC
+    ['A','B'].forEach(lado=>{
+      const t = times[lado];
+      if(TIMES_CASA_BONUS.includes(t.id) && Math.random() < 0.5){
+        t.casa = true;
+        t.forcaAj += 2;
+      }
+    });
+
+    // Arsenal / Tottenham: pipocam contra fracos, jogam melhor contra o topo
+    ['A','B'].forEach(lado=>{
+      const t = times[lado];
+      const outro = times[lado==='A' ? 'B' : 'A'];
+      if(t.id === 'arsenal' || t.id === 'tottenham'){
+        if(TIMES_FRACOS.includes(outro.id) && Math.random() < 0.2){
+          t.pipoca = true;
+          t.forcaAj -= 3;
+        }else if(TIMES_TOPO.includes(outro.id)){
+          t.bonusTopo = true;
+          t.forcaAj += 2;
+        }
+      }
+    });
+
+    // EXCEÇÃO SUPREMA: Arsenal nunca vence o Tottenham
+    const restrito = (times.A.id==='arsenal' && times.B.id==='tottenham') || (times.A.id==='tottenham' && times.B.id==='arsenal');
+    const ladoArsenal = restrito ? (times.A.id==='arsenal' ? 'A' : 'B') : null;
+    if(restrito){
+      times[ladoArsenal].forcaAj = Math.max(0, times[ladoArsenal].forcaAj - 4);
+    }
+
+    times.A.forcaAj = clamp(times.A.forcaAj, 0, 20);
+    times.B.forcaAj = clamp(times.B.forcaAj, 0, 20);
+
+    const probs = calcularProbabilidades(times.A.forcaAj, times.B.forcaAj, restrito, ladoArsenal);
+    const odds = {
+      A: probParaOdd(probs.pA),
+      D: probParaOdd(probs.pD),
+      B: probParaOdd(probs.pB),
+    };
+    if(restrito){
+      // A vitória do Arsenal continua disponível para apostar (com disclaimer de confirmação),
+      // mas a odd é só de zoeira — o resultado é sempre travado pela lenda do Derby de Londres.
+      odds[ladoArsenal] = 50.00;
+    }
+
+    partida = { times, restrito, ladoArsenal, probs, odds, rodando:false, apostaAtual:null };
+    renderMatchup();
+  }
+
+  function calcularProbabilidades(forcaA, forcaB, restrito, ladoArsenal){
+    const total = Math.max(0.001, forcaA+forcaB);
+    const diff = forcaA-forcaB;
+    let pD = clamp(0.28 - Math.abs(diff)*0.015, 0.12, 0.30);
+    let pA = (1-pD) * (forcaA/total);
+    let pB = (1-pD) - pA;
+
+    if(restrito){
+      if(ladoArsenal==='A'){
+        pD += pA*0.4; pB += pA*0.6; pA = 0;
+      }else{
+        pD += pB*0.4; pA += pB*0.6; pB = 0;
+      }
+    }
+    // normalização de segurança
+    const soma = pA+pD+pB;
+    return { pA: pA/soma, pD: pD/soma, pB: pB/soma };
+  }
+
+  function nomeTime(lado){ return partida.times[lado].nome; }
+
+  function renderMatchup(){
+    const A = partida.times.A, B = partida.times.B;
+    document.getElementById('matchup').innerHTML = `
+      <div class="team">
+        <div class="flag">${A.bandeira}</div>
+        <div class="name">${A.nome}</div>
+        ${A.casa ? '<span class="tag">🏠 Em casa</span>' : ''}
+      </div>
+      <div class="vs">VS</div>
+      <div class="team">
+        <div class="flag">${B.bandeira}</div>
+        <div class="name">${B.nome}</div>
+        ${B.casa ? '<span class="tag">🏠 Em casa</span>' : ''}
+      </div>
+    `;
+    document.getElementById('scoreboard').textContent = '0 x 0';
+    document.getElementById('clock').textContent = 'Aguardando início da partida...';
+    document.getElementById('matchLog').innerHTML = '';
+    document.getElementById('alertaJogo').classList.remove('show');
+    document.getElementById('alertaJogo').textContent = '';
+
+    const oddTxt = (v)=> v===null ? '🚫 impossível' : v.toFixed(2)+'x';
+    const tagLendaA = (partida.restrito && partida.ladoArsenal==='A') ? '<span class="odd-tag" style="color:#ff9d2e;">⚠️ Lenda do Derby</span>' : '';
+    const tagLendaB = (partida.restrito && partida.ladoArsenal==='B') ? '<span class="odd-tag" style="color:#ff9d2e;">⚠️ Lenda do Derby</span>' : '';
+    document.getElementById('betOptions').innerHTML = `
+      <label id="optA">
+        <input type="radio" name="resultado" value="A">
+        Vitória ${A.nome}
+        <span class="odd-tag">Odd ${oddTxt(partida.odds.A)}</span>
+        ${tagLendaA}
+      </label>
+      <label id="optD">
+        <input type="radio" name="resultado" value="D" checked>
+        Empate
+        <span class="odd-tag">Odd ${oddTxt(partida.odds.D)}</span>
+      </label>
+      <label id="optB">
+        <input type="radio" name="resultado" value="B">
+        Vitória ${B.nome}
+        <span class="odd-tag">Odd ${oddTxt(partida.odds.B)}</span>
+        ${tagLendaB}
+      </label>
+    `;
+    document.querySelectorAll('input[name=resultado]').forEach(r=>{
+      r.addEventListener('change', ()=>{
+        // Derby de Londres: deixa apostar no Arsenal, mas confirma antes — ele nunca vence o Tottenham.
+        if(partida.restrito && r.value === partida.ladoArsenal){
+          const confirmou = confirm(`⚠️ Tem certeza?\n\nPela lenda do Derby de Londres, o ${nomeTime(partida.ladoArsenal)} NUNCA vence o Tottenham — o script garante isso. Você pode apostar mesmo assim, mas essa aposta está fadada a não dar certo.\n\nContinuar com essa aposta?`);
+          if(!confirmou){
+            document.getElementById('optD').querySelector('input').checked = true;
+            document.querySelectorAll('.bet-options label').forEach(l=>l.classList.remove('picked'));
+            document.getElementById('optD').classList.add('picked');
+            return;
+          }
+          mostrarToast('😅 Tudo bem, mas não diga que não avisamos sobre o Arsenal...');
+        }
+        document.querySelectorAll('.bet-options label').forEach(l=>l.classList.remove('picked'));
+        r.parentElement.classList.add('picked');
+      });
+    });
+    document.getElementById('optD').classList.add('picked');
+    document.getElementById('futebolResult').textContent = '';
+    document.getElementById('futebolResult').className = 'futebol-result';
+  }
+  novoConfronto();
+
+  function logPartida(msg){
+    const log = document.getElementById('matchLog');
+    const linha = document.createElement('div');
+    linha.textContent = msg;
+    log.appendChild(linha);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function exibirAlerta(msg){
+    const el = document.getElementById('alertaJogo');
+    el.textContent = msg;
+    el.classList.remove('show');
+    void el.offsetWidth; // reinicia a animação
+    el.classList.add('show');
+    logPartida(msg);
+    setTimeout(()=>el.classList.remove('show'), 3200);
+  }
+
+  function baseLambda(forca){
+    return 0.006 + Math.max(0,forca)*0.0035;
+  }
+
+  function iniciarPartida(){
+    if(!partida || partida.rodando) return;
+
+    const moeda = document.getElementById('moedaAposta').value;
+    const valorInput = document.getElementById('valorAposta');
+    const valor = Math.floor(Number(valorInput.value));
+    const escolhaEl = document.querySelector('input[name=resultado]:checked');
+    const escolha = escolhaEl ? escolhaEl.value : null;
+
+    if(!Number.isFinite(valor) || valor <= 0){
+      mostrarToast('Digite um valor de aposta válido.');
+      return;
+    }
+    if(!escolha){
+      mostrarToast('Escolha um resultado para apostar.');
+      return;
+    }
+    if(partida.odds[escolha] === null){
+      mostrarToast('Essa opção está bloqueada — impossível pela lenda do Tottenham.');
+      return;
+    }
+    const saldoDisponivel = moeda==='pesos' ? estado.pesos : estado.dolar;
+    if(valor > saldoDisponivel){
+      mostrarToast(`Saldo insuficiente de ${moeda==='pesos'?'Pesos Lekinhos':'DolarAlex'}.`);
+      return;
+    }
+
+    if(moeda==='pesos'){ estado.pesos -= valor; } else { estado.dolar -= valor; }
+    salvarEstado();
+    atualizarSaldoUI();
+
+    partida.apostaAtual = { moeda, valor, escolha, odd: partida.odds[escolha] };
+    partida.rodando = true;
+    document.getElementById('btnApostarFutebol').disabled = true;
+    document.getElementById('futebolResult').textContent = '';
+    document.getElementById('futebolResult').className = 'futebol-result';
+    document.getElementById('matchLog').innerHTML = '';
+
+    logPartida(`⚽ Bola rolando: ${nomeTime('A')} x ${nomeTime('B')}!`);
+    rodarSimulacao();
+  }
+
+  function rodarSimulacao(){
+    const lambda = { A: baseLambda(partida.times.A.forcaAj), B: baseLambda(partida.times.B.forcaAj) };
+    const placar = { A:0, B:0 };
+    const eventosForcados = {}; // minuto -> [lado, lado, ...]
+    const flags = {};
+
+    // Sorteios de malefícios de estado (independentes da força pré-jogo)
+    ['A','B'].forEach(lado=>{
+      const id = partida.times[lado].id;
+      if(id==='neymar' && Math.random() < 0.3){
+        flags.neymarLado = lado;
+        flags.neymarMinuto = 25 + Math.floor(Math.random()*55);
+      }
+      if(id==='alex' && Math.random() < 0.3){
+        flags.alexLado = lado;
+        flags.alexMinuto = 20 + Math.floor(Math.random()*60);
+      }
+      if(id==='brasil' && Math.random() < 0.2){
+        flags.apagaoLado = lado;
+        flags.apagaoInicio = Math.min(84, 10 + Math.floor(Math.random()*74));
+      }
+      if(id==='corinthians' && Math.random() < 0.15){
+        flags.penaltiLado = lado;
+      }
+    });
+
+    if(flags.apagaoInicio){
+      const advLado = flags.apagaoLado==='A' ? 'B' : 'A';
+      for(let k=0;k<4;k++){
+        const minuto = Math.min(90, flags.apagaoInicio + Math.round(k*1.5));
+        eventosForcados[minuto] = eventosForcados[minuto] || [];
+        eventosForcados[minuto].push(advLado);
+      }
+    }
+
+    function agendarSeguranca(ladoComprometido, minutoBase){
+      const outro = ladoComprometido==='A' ? 'B' : 'A';
+      if(placar[ladoComprometido] > placar[outro]){
+        const diff = placar[ladoComprometido] - placar[outro];
+        const vaiEmpatar = Math.random() < 0.5;
+        const golsNecessarios = vaiEmpatar ? diff : diff+1;
+        for(let g=0; g<golsNecessarios; g++){
+          const minutoGol = Math.min(90, minutoBase + g);
+          eventosForcados[minutoGol] = eventosForcados[minutoGol] || [];
+          eventosForcados[minutoGol].push(outro);
+        }
+        exibirAlerta(`😱 Reviravolta se aproximando para ${nomeTime(outro)}!`);
+      }
+    }
+
+    const scoreboardEl = document.getElementById('scoreboard');
+    const clockEl = document.getElementById('clock');
+    let minuto = 0;
+
+    function atualizarPlacarTela(){
+      scoreboardEl.textContent = `${placar.A} x ${placar.B}`;
+    }
+
+    function registrarGol(lado){
+      placar[lado]++;
+      atualizarPlacarTela();
+      logPartida(`🥅 GOL! ${nomeTime('A')} ${placar.A} x ${placar.B} ${nomeTime('B')} (${minuto}')`);
+    }
+
+    function finalizarComResultado(){
+      let resultado = placar.A > placar.B ? 'A' : (placar.A < placar.B ? 'B' : 'D');
+      // Rede de segurança final: Arsenal jamais vence o Tottenham
+      if(partida.restrito && resultado === partida.ladoArsenal){
+        placar[partida.ladoArsenal] = placar[partida.ladoArsenal==='A'?'B':'A'];
+        atualizarPlacarTela();
+        resultado = 'D';
+      }
+      finalizarPartida(resultado, placar);
+    }
+
+    const intervalo = setInterval(()=>{
+      minuto++;
+      clockEl.textContent = minuto+"'";
+
+      if(flags.neymarMinuto === minuto){
+        exibirAlerta('🚨 NEYMAR LESIONADO! FAIXA E PARIDÃO ATIVADOS!');
+        lambda[flags.neymarLado] *= 0.15;
+        lambda[flags.neymarLado==='A'?'B':'A'] *= 3;
+        flags.neymarComprometido = true;
+      }
+      if(flags.alexMinuto === minuto){
+        exibirAlerta('🚨 ALEX EXPULSO POR RECLAMAÇÃO!');
+        lambda[flags.alexLado] *= 0.1;
+        lambda[flags.alexLado==='A'?'B':'A'] *= 3.5;
+        flags.alexComprometido = true;
+      }
+      if(flags.apagaoInicio === minuto){
+        exibirAlerta(`🚨 APAGÃO DO 7x1 ATIVADO EM ${nomeTime(flags.apagaoLado).toUpperCase()}!`);
+      }
+
+      if(eventosForcados[minuto]){
+        eventosForcados[minuto].forEach(lado=>registrarGol(lado));
+      }
+
+      if(minuto === 85){
+        if(flags.neymarComprometido) agendarSeguranca(flags.neymarLado, 86);
+        if(flags.alexComprometido) agendarSeguranca(flags.alexLado, 86);
+        if(partida.times.A.pipoca) agendarSeguranca('A', 87);
+        if(partida.times.B.pipoca) agendarSeguranca('B', 87);
+      }
+
+      if(Math.random() < lambda.A) registrarGol('A');
+      if(Math.random() < lambda.B) registrarGol('B');
+
+      if(minuto >= 90){
+        clearInterval(intervalo);
+        if(flags.penaltiLado){
+          exibirAlerta(`🚨 PÊNALTI ROUBADO PRO ${nomeTime(flags.penaltiLado).toUpperCase()}!`);
+          setTimeout(()=>{
+            if(Math.random() < 0.7){
+              logPartida('😂 Memphis Depay isolou a bola na lua! Pênalti perdido.');
+            }else{
+              registrarGol(flags.penaltiLado);
+              logPartida('🥅 GOOOL DE PÊNALTI DECISIVO!');
+            }
+            posJogo();
+          }, 1300);
+        }else{
+          posJogo();
+        }
+      }
+    }, 160);
+
+    function posJogo(){
+      logPartida(`🔔 Fim de jogo: ${nomeTime('A')} ${placar.A} x ${placar.B} ${nomeTime('B')}`);
+      if(placar.A === placar.B){
+        clockEl.textContent = 'Prorrogação...';
+        logPartida('⏱️ Vai para a prorrogação!');
+        setTimeout(()=>{
+          logPartida('⏱️ Prorrogação também termina empatada.');
+          clockEl.textContent = 'Pênaltis!';
+          logPartida('🥅 Vai para os pênaltis...');
+          setTimeout(()=>{
+            const vencePenaltisA = Math.random() < 0.5;
+            logPartida(`🏆 ${vencePenaltisA ? nomeTime('A') : nomeTime('B')} vence nos pênaltis! (resultado do tempo normal foi empate)`);
+            clockEl.textContent = 'Fim de jogo (pênaltis)';
+            finalizarComResultado();
+          }, 3200);
+        }, 3800);
+      }else{
+        finalizarComResultado();
+      }
+    }
+  }
+
+  function finalizarPartida(resultado, placarFinal){
+    partida.rodando = false;
+    document.getElementById('btnApostarFutebol').disabled = false;
+
+    const resultEl = document.getElementById('futebolResult');
+    const aposta = partida.apostaAtual;
+    const nomeMoeda = aposta.moeda==='pesos' ? 'Pesos Lekinhos' : 'DolarAlex';
+    const usuarioGanhou = resultado === aposta.escolha;
+
+    if(usuarioGanhou){
+      const premioBruto = Math.floor(aposta.valor * aposta.odd);
+      const premioLiquido = aplicarConfiscoAgiota(premioBruto);
+      if(aposta.moeda==='pesos'){ estado.pesos += premioLiquido; } else { estado.dolar += premioLiquido; }
+      salvarEstado();
+      atualizarSaldoUI();
+      resultEl.textContent = `🎉 Você acertou (odd ${aposta.odd.toFixed(2)}x)! Ganhou ${premioLiquido} ${nomeMoeda} — já incluindo o valor apostado de volta.`;
+      resultEl.classList.add('win');
+      mostrarToast(`🎉 Aposta certa! +${premioLiquido} ${nomeMoeda}`);
+    }else{
+      resultEl.textContent = `😢 Não foi dessa vez (placar final ${placarFinal.A} x ${placarFinal.B}). Você perdeu ${aposta.valor} ${nomeMoeda}.`;
+      resultEl.classList.add('lose');
+    }
+
+    setTimeout(()=>{
+      novoConfronto();
+    }, 3800);
+  }
+
+  /* ==================================================
+     INICIALIZAÇÃO
+  ================================================== */
+  atualizarSaldoUI();
+</script>
