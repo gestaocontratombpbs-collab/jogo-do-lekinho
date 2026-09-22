@@ -403,6 +403,92 @@
   .ranking-box ol{margin:10px 0 0;padding-left:20px;}
   .ranking-box li{margin-bottom:3px;}
 
+  /* ---------- Tigrinho do Lekinho (Caça-níqueis) ---------- */
+  .tigrinho-wrap{display:flex;flex-direction:column;align-items:center;gap:18px;padding-top:6px;}
+  .slot-machine{
+    display:flex;
+    gap:14px;
+    justify-content:center;
+    background:linear-gradient(180deg,#241a3d,#150f26);
+    border:2px solid var(--accent-2);
+    border-radius:18px;
+    padding:22px;
+    box-shadow:0 0 24px rgba(124,92,255,.35), inset 0 0 18px #0009;
+  }
+  .reel{
+    width:82px;height:96px;
+    background:var(--card-2);
+    border:2px solid var(--border);
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:46px;
+    box-shadow:inset 0 0 14px #000a;
+  }
+  .reel.spinning{animation:reelspin .12s linear infinite;}
+  @keyframes reelspin{
+    0%{transform:translateY(0);filter:blur(0);}
+    50%{transform:translateY(4px);filter:blur(1.5px);}
+    100%{transform:translateY(0);filter:blur(0);}
+  }
+  .tigrinho-tabela{
+    font-size:11.5px;
+    color:var(--muted);
+    text-align:center;
+    max-width:460px;
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:10px 14px;
+    line-height:1.7;
+  }
+  .slot-result{min-height:26px;font-weight:800;font-size:15.5px;text-align:center;max-width:460px;}
+  .slot-result.win{color:var(--green);}
+  .slot-result.lose{color:var(--red);}
+
+  /* ---------- Jogo do Milhão ---------- */
+  .quiz-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;padding-top:6px;}
+  .quiz-progress{font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.4px;text-transform:uppercase;}
+  .quiz-premio-atual{
+    font-size:13px;
+    color:var(--accent);
+    font-weight:800;
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:6px 16px;
+  }
+  .quiz-pergunta{
+    font-size:18px;
+    font-weight:800;
+    text-align:center;
+    max-width:520px;
+  }
+  .quiz-opcoes{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    width:100%;
+    max-width:440px;
+  }
+  .quiz-opcoes button{
+    text-align:left;
+    padding:13px 16px;
+    background:var(--card-2);
+    border:1px solid var(--border);
+    color:var(--text);
+    font-size:14px;
+    border-radius:12px;
+  }
+  .quiz-opcoes button:hover:not(:disabled){border-color:var(--accent-2);background:#2a2450;}
+  .quiz-opcoes button.certa{border-color:var(--green);background:#123321;color:var(--green);}
+  .quiz-opcoes button.errada{border-color:var(--red);background:#3a1420;color:#ff9fb0;}
+  .quiz-resultado{text-align:center;font-weight:800;font-size:16px;min-height:24px;max-width:520px;}
+  .quiz-resultado.win{color:var(--green);}
+  .quiz-resultado.lose{color:var(--red);}
+  .quiz-start{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;}
+
   .toast{
     position:fixed;
     bottom:20px;left:50%;
@@ -479,6 +565,8 @@
   <button class="tab-btn active" data-tab="roleta" onclick="trocarAba('roleta')">🎡 Roleta Alex</button>
   <button class="tab-btn" data-tab="foguetes" onclick="trocarAba('foguetes')">🚀 Lekinho Foguetes</button>
   <button class="tab-btn" data-tab="futebol" onclick="trocarAba('futebol')">⚽ Futebol do Alex</button>
+  <button class="tab-btn" data-tab="tigrinho" onclick="trocarAba('tigrinho')">🐯 Tigrinho do Lekinho</button>
+  <button class="tab-btn" data-tab="milhao" onclick="trocarAba('milhao')">🎯 Jogo do Milhão</button>
 </nav>
 
 <main>
@@ -559,6 +647,47 @@
     </div>
   </section>
 
+  <!-- ============ TIGRINHO DO LEKINHO (CAÇA-NÍQUEIS) ============ -->
+  <section class="game" id="tab-tigrinho">
+    <h2>🐯 Tigrinho do Lekinho</h2>
+    <p class="game-desc">Cada giro custa <strong>30 $LK</strong>. Alinhe 3 símbolos iguais nos rolos para ganhar — mas cuidado com quem você alinha.</p>
+    <div class="disclaimer-inline">
+      <span class="ico">🚫</span>
+      <span>Caça-níquel de mentirinha, sem nenhum valor real. Sofre a taxa do Agiota se houver dívida ativa.</span>
+    </div>
+    <div class="tigrinho-wrap">
+      <div class="slot-machine">
+        <div class="reel" id="reel0">🍒</div>
+        <div class="reel" id="reel1">🍋</div>
+        <div class="reel" id="reel2">🍇</div>
+      </div>
+      <button class="btn-primary" id="btnTigrinho" onclick="girarTigrinho()">Girar (30 🪙)</button>
+      <div class="slot-result" id="slotResult"></div>
+      <div class="tigrinho-tabela">
+        7️⃣ 7️⃣ 7️⃣ (Alex) → Jackpot Máximo: 50 $DX<br>
+        😝 😝 😝 (Neymar) → "Rodada cancelada por lesão do Ney!" — perde metade da aposta<br>
+        🏆 🏆 🏆 (Arsenal) → "Sala de troféus do Arsenal vazia!" — perde tudo<br>
+        Qualquer outra trinca (🍒 / 🍋 / 🍇) → paga 5x a aposta em $LK
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ JOGO DO MILHÃO ============ -->
+  <section class="game" id="tab-milhao">
+    <h2>🎯 Jogo do Milhão (Perguntas da Sala)</h2>
+    <p class="game-desc">Inscrição de <strong>100 $LK</strong>. Erre uma pergunta e perde a inscrição na hora. Acerte as 5 seguidas e leva <strong>500 $LK + 5 $DX</strong>.</p>
+    <div class="disclaimer-inline">
+      <span class="ico">🚫</span>
+      <span>Quiz de mentirinha só com fofoca interna da sala, sem nenhum valor real. Sofre a taxa do Agiota se houver dívida ativa.</span>
+    </div>
+    <div class="quiz-wrap" id="quizWrap">
+      <div class="quiz-start" id="quizStart">
+        <p style="color:var(--muted);font-size:13px;max-width:420px;text-align:center;">5 perguntas sobre a lenda da sala. Uma errada e já era — responda com atenção!</p>
+        <button class="btn-primary" id="btnMilhao" onclick="iniciarJogoMilhao()">Inscrever-se (100 🪙)</button>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer class="disclaimer-bottom">
@@ -628,6 +757,8 @@
   function atualizarDisponibilidadeBotoes(){
     document.getElementById('btnGirar').disabled = estado.pesos < 50 || girando;
     document.getElementById('btnIniciarFoguete').disabled = estado.pesos <= 0 || foguetesRodando;
+    document.getElementById('btnTigrinho').disabled = estado.pesos < 30 || girandoTigrinho;
+    document.getElementById('btnMilhao').disabled = estado.pesos < 100 || jogoMilhao.rodando;
   }
 
   function mostrarToast(msg){
@@ -1296,6 +1427,229 @@
     setTimeout(()=>{
       novoConfronto();
     }, 3800);
+  }
+
+  /* ==================================================
+     TIGRINHO DO LEKINHO (CAÇA-NÍQUEIS)
+  ================================================== */
+  const CUSTO_TIGRINHO = 30;
+  const SIMBOLOS_TIGRINHO = ['7️⃣','😝','🏆','🍒','🍋','🍇'];
+  let girandoTigrinho = false;
+
+  function simboloAleatorio(){
+    return SIMBOLOS_TIGRINHO[Math.floor(Math.random()*SIMBOLOS_TIGRINHO.length)];
+  }
+
+  function girarTigrinho(){
+    if(girandoTigrinho) return;
+    if(estado.pesos < CUSTO_TIGRINHO){
+      mostrarToast('Saldo insuficiente de Pesos Lekinhos para girar.');
+      return;
+    }
+    girandoTigrinho = true;
+    estado.pesos -= CUSTO_TIGRINHO;
+    salvarEstado();
+    atualizarSaldoUI();
+
+    const resultEl = document.getElementById('slotResult');
+    resultEl.textContent = '';
+    resultEl.className = 'slot-result';
+
+    const final = [simboloAleatorio(), simboloAleatorio(), simboloAleatorio()];
+    const reels = [document.getElementById('reel0'), document.getElementById('reel1'), document.getElementById('reel2')];
+
+    reels.forEach((el, i)=>{
+      el.classList.add('spinning');
+      const giro = setInterval(()=>{
+        el.textContent = simboloAleatorio();
+      }, 70);
+      setTimeout(()=>{
+        clearInterval(giro);
+        el.classList.remove('spinning');
+        el.textContent = final[i];
+        if(i === reels.length-1){
+          avaliarTigrinho(final);
+        }
+      }, 700 + i*450);
+    });
+  }
+
+  function avaliarTigrinho(final){
+    const [a,b,c] = final;
+    const resultEl = document.getElementById('slotResult');
+    const trinca = (a===b && b===c);
+
+    if(trinca && a==='7️⃣'){
+      const liquido = aplicarConfiscoAgiota(50);
+      estado.dolar += liquido;
+      salvarEstado();
+      resultEl.textContent = `🎰 JACKPOT MÁXIMO! 7️⃣ 7️⃣ 7️⃣ — +${liquido} DolarAlex!`;
+      resultEl.classList.add('win');
+      mostrarToast('🎰 JACKPOT DO ALEX! Prêmio máximo!');
+    }else if(trinca && a==='😝'){
+      const reembolso = Math.floor(CUSTO_TIGRINHO/2);
+      estado.pesos += reembolso;
+      salvarEstado();
+      resultEl.textContent = `🚑 Rodada cancelada por lesão do Ney! Você perde metade do valor apostado (fica com ${reembolso} 🪙 de volta).`;
+      resultEl.classList.add('lose');
+    }else if(trinca && a==='🏆'){
+      resultEl.textContent = '🏆 Erro: Sala de troféus do Arsenal vazia, nada para receber! Você perdeu tudo.';
+      resultEl.classList.add('lose');
+    }else if(trinca){
+      const premioBruto = CUSTO_TIGRINHO * 5;
+      const liquido = aplicarConfiscoAgiota(premioBruto);
+      estado.pesos += liquido;
+      salvarEstado();
+      resultEl.textContent = `🎉 Trinca de ${a}! Pagou 5x a aposta: +${liquido} 🪙`;
+      resultEl.classList.add('win');
+    }else{
+      resultEl.textContent = '😢 Não alinhou dessa vez. Perdeu os 30 🪙.';
+      resultEl.classList.add('lose');
+    }
+
+    atualizarSaldoUI();
+    girandoTigrinho = false;
+    atualizarDisponibilidadeBotoes();
+  }
+
+  /* ==================================================
+     JOGO DO MILHÃO (PERGUNTAS DA SALA)
+  ================================================== */
+  const CUSTO_MILHAO = 100;
+  const PREMIO_MILHAO_LK = 500;
+  const PREMIO_MILHAO_DX = 5;
+  const PERGUNTAS_MILHAO = [
+    {
+      pergunta: 'Quantas são as notas existentes na sala do ALEX?',
+      opcoes: ['2 (só peso, óbvio)', '4 (3 pesos e 1 dolaralex)', '10 (ele imprime em casa)', '0 (a sala tá falida)'],
+      correta: '4 (3 pesos e 1 dolaralex)'
+    },
+    {
+      pergunta: 'Quem mais zoa o Alex?',
+      opcoes: ['Murilo', 'Jeff', 'Bruno', 'TODO MUNDO'],
+      correta: 'TODO MUNDO'
+    },
+    {
+      pergunta: 'Alex já mentiu dizendo que tinha morrido?',
+      opcoes: ['Não, ele é super sério', 'SIM! ISSO É VERDADE', 'Só uma vez, no April Fools', 'Isso é segredo de estado'],
+      correta: 'SIM! ISSO É VERDADE'
+    },
+    {
+      pergunta: 'Quanto de dinheiro Alex roubou no caso do BANCO ALEX?',
+      opcoes: ['10 Reais', '1 Bilhão', '100 Milhões', 'Nada, foi tudo fake news'],
+      correta: '100 Milhões'
+    },
+    {
+      pergunta: 'Quem foi o primeiro presidente de Angola?',
+      opcoes: ['Agostinho Neto', 'Zé Pequeno', 'ALEX', 'Ninguém, foi sorteio'],
+      correta: 'ALEX'
+    },
+  ];
+
+  let jogoMilhao = { rodando:false, perguntaAtual:0 };
+
+  function embaralharArray(arr){
+    const copia = [...arr];
+    for(let i=copia.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [copia[i],copia[j]] = [copia[j],copia[i]];
+    }
+    return copia;
+  }
+
+  // Confisca 30% de um prêmio combinado ($LK + $DX) em uma única cobrança do Agiota.
+  function aplicarConfiscoAgiotaCombo(valores){
+    if(estado.agiotaCobrancasRestantes > 0){
+      const taxaLK = Math.floor(valores.pesos * 0.3);
+      const taxaDX = Math.floor(valores.dolar * 0.3);
+      estado.agiotaCobrancasRestantes--;
+      mostrarToast(`💸 O Agiota confiscou ${taxaLK} $LK e ${taxaDX} $DX do seu prêmio! Restam ${estado.agiotaCobrancasRestantes} cobrança(s) da dívida.`);
+      return { pesos: valores.pesos - taxaLK, dolar: valores.dolar - taxaDX };
+    }
+    return valores;
+  }
+
+  function iniciarJogoMilhao(){
+    if(jogoMilhao.rodando) return;
+    if(estado.pesos < CUSTO_MILHAO){
+      mostrarToast('Saldo insuficiente de Pesos Lekinhos para se inscrever.');
+      return;
+    }
+    estado.pesos -= CUSTO_MILHAO;
+    salvarEstado();
+    atualizarSaldoUI();
+
+    jogoMilhao.rodando = true;
+    jogoMilhao.perguntaAtual = 0;
+    renderPerguntaMilhao();
+  }
+
+  function renderPerguntaMilhao(){
+    const q = PERGUNTAS_MILHAO[jogoMilhao.perguntaAtual];
+    const opcoes = embaralharArray(q.opcoes);
+    const wrap = document.getElementById('quizWrap');
+    wrap.innerHTML = `
+      <div class="quiz-progress">Pergunta ${jogoMilhao.perguntaAtual+1} de ${PERGUNTAS_MILHAO.length}</div>
+      <div class="quiz-premio-atual">Prêmio final: ${PREMIO_MILHAO_LK} $LK + ${PREMIO_MILHAO_DX} $DX</div>
+      <div class="quiz-pergunta">${q.pergunta}</div>
+      <div class="quiz-opcoes" id="quizOpcoes">
+        ${opcoes.map((op,i)=>`<button type="button" data-opcao="${i}">${op}</button>`).join('')}
+      </div>
+      <div class="quiz-resultado" id="quizResultado"></div>
+    `;
+    document.querySelectorAll('#quizOpcoes button').forEach((btn, i)=>{
+      btn.addEventListener('click', ()=>responderMilhao(opcoes[i], btn));
+    });
+  }
+
+  function responderMilhao(opcaoEscolhida, btnClicado){
+    const q = PERGUNTAS_MILHAO[jogoMilhao.perguntaAtual];
+    const acertou = opcaoEscolhida === q.correta;
+    const resultadoEl = document.getElementById('quizResultado');
+
+    document.querySelectorAll('#quizOpcoes button').forEach(btn=>{
+      btn.disabled = true;
+      if(btn.textContent === q.correta) btn.classList.add('certa');
+    });
+    if(!acertou) btnClicado.classList.add('errada');
+
+    if(acertou){
+      jogoMilhao.perguntaAtual++;
+      if(jogoMilhao.perguntaAtual >= PERGUNTAS_MILHAO.length){
+        const liquido = aplicarConfiscoAgiotaCombo({ pesos: PREMIO_MILHAO_LK, dolar: PREMIO_MILHAO_DX });
+        estado.pesos += liquido.pesos;
+        estado.dolar += liquido.dolar;
+        salvarEstado();
+        atualizarSaldoUI();
+        resultadoEl.textContent = `🏆 VOCÊ ACERTOU TODAS! Ganhou ${liquido.pesos} $LK + ${liquido.dolar} $DX!`;
+        resultadoEl.classList.add('win');
+        mostrarToast('🏆 Você levou o Jogo do Milhão da sala!');
+        jogoMilhao.rodando = false;
+        atualizarDisponibilidadeBotoes();
+        setTimeout(()=>renderInicioMilhao(), 4200);
+      }else{
+        resultadoEl.textContent = '✅ Certo! Próxima pergunta...';
+        resultadoEl.classList.add('win');
+        setTimeout(()=>renderPerguntaMilhao(), 1400);
+      }
+    }else{
+      jogoMilhao.rodando = false;
+      resultadoEl.textContent = `😢 Errou! A resposta certa era "${q.correta}". Fim de jogo — perdeu a inscrição de ${CUSTO_MILHAO} $LK.`;
+      resultadoEl.classList.add('lose');
+      atualizarDisponibilidadeBotoes();
+      setTimeout(()=>renderInicioMilhao(), 4200);
+    }
+  }
+
+  function renderInicioMilhao(){
+    const wrap = document.getElementById('quizWrap');
+    wrap.innerHTML = `
+      <div class="quiz-start" id="quizStart">
+        <p style="color:var(--muted);font-size:13px;max-width:420px;text-align:center;">5 perguntas sobre a lenda da sala. Uma errada e já era — responda com atenção!</p>
+        <button class="btn-primary" id="btnMilhao" onclick="iniciarJogoMilhao()">Inscrever-se (100 🪙)</button>
+      </div>
+    `;
+    atualizarDisponibilidadeBotoes();
   }
 
   /* ==================================================
